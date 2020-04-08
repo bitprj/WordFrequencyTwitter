@@ -13,7 +13,7 @@ import networkx
 
 import warnings
 
-
+# 3.md: regular expressions #
 def remove_url(txt):
     """Replace URLs found in a text string with nothing
     (i.e. it will remove the URL from the string).
@@ -36,7 +36,10 @@ def main():
 
     sns.set(font_scale=1.5)
     sns.set_style("whitegrid")
-
+    
+    
+    # 1.md: authentication #
+    
     # input your credentials here
     consumer_key = 'xxx'
     consumer_secret = 'xxx'
@@ -46,7 +49,9 @@ def main():
     auth = tw.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
     api = tw.API(auth, wait_on_rate_limit=True)
-
+    
+    
+    # 2.md: searching #
     search_term = "#twitter+api -filter:retweets"
 
     tweets = tw.Cursor(api.search,
@@ -55,11 +60,14 @@ def main():
                        since='2018-11-01').items(1000)
 
     all_tweets = [tweet.text for tweet in tweets]
+    
 
     print(all_tweets[:5])
     all_tweets_no_urls = [remove_url(tweet) for tweet in all_tweets]
     print(all_tweets_no_urls[:5])
-
+    
+    # 4.md - Generating list of most common words into DataFrame #
+    
     # Split the words from one tweet into unique elements
     print(all_tweets_no_urls[0].split())
 
@@ -73,6 +81,7 @@ def main():
     # List of all words across tweets
     all_words_no_urls = list(itertools.chain(*words_in_tweet))
 
+    
     # Create counter
     counts_no_urls = collections.Counter(all_words_no_urls)
 
@@ -82,6 +91,8 @@ def main():
                                         columns=['words', 'count'])
 
     print(clean_tweets_no_urls.head())
+    
+    # 5.md - plotting horizontal bar graph #
 
     fig, ax = plt.subplots(figsize=(8, 8))
     # Plot horizontal bar graph
